@@ -90,33 +90,6 @@ task install
 task uninstall
 ```
 
-### Configuration
-
-Create a configuration file named `hpxd.yaml` inside the `configs` directory.
-
-Sample configuration:
-
-```yaml
-repoURL: https://github.com/user/haproxy-configs.git
-branch: main
-haproxyConfigPath: /path/to/haproxy/config
-pollingInterval: 60  # in seconds
-```
-
-### Docker
-
-1. Build the Docker image:
-
-```bash
-docker build -t hpxd .
-```
-
-2. Run the Docker image:
-
-```bash
-docker run -d --name hpxd hpxd
-```
-
 ### Contributing
 
 Contributions are welcome! Please read the contribution guidelines before submitting a pull request.
