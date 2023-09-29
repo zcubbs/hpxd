@@ -6,7 +6,7 @@ import (
 )
 
 const (
-	testRepoURL           = "https://github.com/zcubbs/haproxy-test-repo.git"
+	testRepoURL           = "https://github.com/zcubbs/haproxy-test-repo-public.git"
 	testHaproxyConfigPath = "/basic/haproxy.cfg"
 	testRepoBranch        = "main"
 )
