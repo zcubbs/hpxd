@@ -1,0 +1,70 @@
+version: '3'
+
+tasks:
+
+  mod:
+    desc: Update 'go.mod'.
+    cmds:
+      - go mod tidy
+
+  build:
+    desc: Build Go Binaries
+    cmds:
+      - go build -v ./...
+
+  docker-build:
+    desc: Build Docker image.
+    cmds:
+      - docker build -t hpxd-image .
+
+  docker-run:
+    desc: Run project in Docker container.
+    cmds:
+      - docker run -p 9100:9100 hpxd-image
+
+  clean:
+    desc: Clean up generated files.
+    cmds:
+      - task: clean:{{OS}}
+
+  clean:darwin:
+    desc: Clean up generated files.
+    cmds:
+      - rm -f hpxd
+
+  clean:windows:
+    desc: Clean up generated files.
+    cmds:
+      - del hpxd.exe
+
+  test:
+    desc: Run tests
+    cmds:
+      - go test -v ./...
+
+  lint:
+    desc: Run linter
+    cmds:
+      - golangci-lint run ./... -v --timeout 5m
+
+  scan:
+    desc: Run security scan
+    cmds:
+      - gosec -conf .gosec.config.json "./..."
+
+  tools:
+    desc: Install tools
+    cmds:
+      - task: tools:install:golangci-lint
+      - task: tools:install:gosec
+
+  tools:install:golangci-lint:
+    desc: Install golangci-lint
+    cmds:
+      - go install github.com/golangci/golangci-lint/cmd/golangci-lint@latest
+
+  tools:install:gosec:
+    desc: Install gosec
+    cmds:
+      - go install github.com/securego/gosec/v2/cmd/gosec@latest
+

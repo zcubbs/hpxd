@@ -1,0 +1,15 @@
+/.idea/
+*.iml
+
+# Binaries
+bin/
+
+# Go-specific
+*.o
+*.a
+*.so
+/vendor/
+*.test
+
+# Logs
+*.log

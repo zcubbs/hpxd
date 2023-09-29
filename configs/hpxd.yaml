@@ -1,0 +1,4 @@
+repoURL: "https://github.com/your/repo.git"
+branch: "master"
+haproxyConfigPath: "/path/to/haproxy/config.cfg"
+pollingInterval: 60 # in seconds

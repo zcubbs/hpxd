@@ -1,0 +1,27 @@
+# Use the official Ubuntu image as a base
+FROM ubuntu:latest
+
+# Set environment variables to avoid prompts
+ENV DEBIAN_FRONTEND=noninteractive
+
+# Install necessary packages: Go, Git, HAProxy, and any other dependencies your project may need
+RUN apt-get update && \
+    apt-get install -y golang git haproxy && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
+
+# Set the working directory inside the container
+WORKDIR /app
+
+# Copy your local code into the container
+COPY . .
+
+# Build your project
+RUN go build -o hpxd
+
+# Expose necessary ports.
+# Example: If you have a metrics endpoint, you might expose 9100 for Prometheus.
+EXPOSE 9100
+
+# Command to run when the container starts
+CMD ["./hpxd"]
