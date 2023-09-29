@@ -2,7 +2,14 @@
 
 `hpxd` is a daemon that runs on a node and manages the state of HAProxy. It listens for changes from a specified Git repository and updates the HAProxy configuration accordingly.
 
-![hpxd logo](docs/assets/logo.png)
+---
+<p align="center">
+</p>
+<p align="center">
+  <img width="350" src="docs/assets/logo.png">
+</p>
+
+---
 
 ## Features
 
