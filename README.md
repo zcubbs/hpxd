@@ -124,6 +124,6 @@ This project is licensed under the MIT License. See the [LICENSE](LICENSE) file 
 
 ### Support and Feedback
 
-If you need support or have any feedback, please open an issue [here]()
+If you need support or have any feedback, please open an issue [here](https://github.com/zcubbs/hpxd/issues/new)
 
 
