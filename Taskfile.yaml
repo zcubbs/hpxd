@@ -12,16 +12,6 @@ tasks:
     cmds:
       - go build -v ./...
 
-  docker-build:
-    desc: Build Docker image.
-    cmds:
-      - docker build -t hpxd-image .
-
-  docker-run:
-    desc: Run project in Docker container.
-    cmds:
-      - docker run -p 9100:9100 hpxd-image
-
   clean:
     desc: Clean up generated files.
     cmds:
@@ -68,3 +58,27 @@ tasks:
     cmds:
       - go install github.com/securego/gosec/v2/cmd/gosec@latest
 
+  build-docker-dev:
+    desc: Build the development Docker image.
+    cmds:
+      - docker build -t hpxd-dev -f build/Dockerfile.dev .
+
+  run-docker-dev:
+    desc: Run the development Docker container.
+    cmds:
+      - docker run -it --rm -v $(pwd):/app -p 9100:9100 hpxd-dev /bin/bash
+
+
+  install:
+    desc: Run the installation script.
+    cmds:
+      - scripts/install.sh
+
+  uninstall:
+    desc: Run the uninstallation script.
+    cmds:
+      - scripts/uninstall.sh
+
+  default:
+    cmds:
+      - task -l

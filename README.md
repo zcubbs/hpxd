@@ -58,33 +58,36 @@ hpxd -c /path/to/config.yaml
 
 ## Development
 
-### Prerequisites
+> Prerequisites
+> - Docker (https://rancherdesktop.io/)
+> - Task (https://taskfile.dev/#/installation)
 
-- Go (version 1.17 or newer)
-- Git
-- HAProxy installed on the node
+### Setup Development Environment
 
-### Installation
-
-1. Clone the repository:
-
+#### 1. Build the development Docker image:
+    
 ```bash
-git clone https://github.com/zcubbs/hpxd.git
+task build-docker-dev
 ```
-2. Navigate to the project directory:
+
+#### 2. Run the development Docker container:
 
 ```bash
-cd hpxd
+task run-docker-dev
 ```
-3. Build the project:
+
+#### 3. Build and test your Go project:
 
 ```bash
-go build
+task build
+task test
 ```
-4. Run the project:
+
+#### 4. Install/Uninstall:
 
 ```bash
-./hpxd
+task install
+task uninstall
 ```
 
 ### Configuration
