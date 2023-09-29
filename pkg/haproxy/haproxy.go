@@ -1,6 +1,7 @@
 package haproxy
 
 import (
+	"github.com/zcubbs/hpxd/pkg/cmd"
 	"os/exec"
 	"strings"
 )
@@ -18,8 +19,7 @@ func NewHandler(configPath string) *Handler {
 
 // ValidateConfig validates the current HAProxy configuration
 func (h *Handler) ValidateConfig() error {
-	cmd := exec.Command("haproxy", "-c", "-f", h.configPath)
-	return cmd.Run() // This will return nil if the config is valid, otherwise it'll return an error
+	return cmd.RunCmd("haproxy", "-c", "-f", h.configPath)
 }
 
 // Reload gracefully reloads HAProxy

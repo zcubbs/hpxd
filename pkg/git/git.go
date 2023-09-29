@@ -1,9 +1,9 @@
 package git
 
 import (
+	"github.com/zcubbs/hpxd/pkg/cmd"
 	"log"
 	"os"
-	"os/exec"
 	"path/filepath"
 )
 
@@ -46,16 +46,15 @@ func (g *Handler) PullAndUpdate() (bool, error) {
 }
 
 func (g *Handler) cloneRepo() error {
-	cmd := exec.Command("git", "clone", "-b", g.branch, g.repoURL, g.localRepoPath)
-	if err := cmd.Run(); err != nil {
+	if err := cmd.RunCmd("git",
+		"clone", "-b", g.branch, g.repoURL, g.localRepoPath); err != nil {
 		return err
 	}
 	return g.updateHAProxyConfig()
 }
 
 func (g *Handler) pullRepo() (bool, error) {
-	cmd := exec.Command("git", "-C", g.localRepoPath, "pull", "origin", g.branch)
-	output, err := cmd.CombinedOutput()
+	output, err := cmd.RunCmdCombinedOutput("git", "-C", g.localRepoPath, "pull", "origin", g.branch)
 	if err != nil {
 		return false, err
 	}
@@ -72,12 +71,12 @@ func (g *Handler) updateHAProxyConfig() error {
 	srcFile := filepath.Join(g.localRepoPath, "path-to-config-inside-repo") // You need to specify the relative path of your HAProxy config file inside the Git repo
 	dstFile := g.haproxyConfigPath
 
-	input, err := os.ReadFile(srcFile)
+	input, err := os.ReadFile(filepath.Clean(srcFile))
 	if err != nil {
 		return err
 	}
 
-	err = os.WriteFile(dstFile, input, 0644)
+	err = os.WriteFile(dstFile, input, 0600)
 	if err != nil {
 		log.Println("Error creating", dstFile)
 		return err

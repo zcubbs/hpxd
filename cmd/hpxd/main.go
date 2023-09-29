@@ -88,7 +88,11 @@ func validateConfig(config *Configuration) error {
 func startMetricsEndpoint(port int) {
 	http.Handle("/metrics", promhttp.Handler())
 	go func() {
-		err := http.ListenAndServe(fmt.Sprintf(":%d", port), nil)
+		server := &http.Server{
+			Addr:              fmt.Sprintf(":%d", port),
+			ReadHeaderTimeout: 3 * time.Second,
+		}
+		err := server.ListenAndServe()
 		if err != nil {
 			logrus.Fatalf("Error starting metrics endpoint: %v", err)
 		}
