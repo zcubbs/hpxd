@@ -11,8 +11,10 @@ permissions:
   contents: write
 jobs:
   release:
-    if: github.triggering_actor == 'zcubbs'
     runs-on: ubuntu-latest
+
+    if : github.event.inputs.semver != '' && startsWith(github.event.inputs.semver, 'v') && github.triggering_actor == 'zcubbs'
+
     steps:
       - name: Checkout Code
         uses: actions/checkout@v3.5.3
@@ -54,3 +56,11 @@ jobs:
         with:
           name: ${{ inputs.semver }}
           tag_name: ${{ inputs.semver }}
+
+      - uses: goreleaser/goreleaser-action@v4
+        with:
+          distribution: goreleaser
+          version: latest
+          args: release -f .goreleaser.yaml --clean --verbose
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
