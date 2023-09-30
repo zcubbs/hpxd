@@ -11,6 +11,7 @@ UNINSTALL_PATH="$INSTALL_DIR/uninstall.sh"
 # Configuration Variables
 REPO_URL=""
 BRANCH="main"
+REPO_FILE_PATH=""
 HAPROXY_CONFIG_PATH=""
 POLLING_INTERVAL="5s"
 ENABLE_PROMETHEUS=true
@@ -35,6 +36,11 @@ do
         ;;
         --branch)
         BRANCH="$2"
+        shift
+        shift
+        ;;
+        --path)
+        REPO_FILE_PATH="$2"
         shift
         shift
         ;;
@@ -65,8 +71,8 @@ do
 done
 
 # Check if mandatory parameters are provided
-if [[ -z "$REPO_URL" || -z "$HAPROXY_CONFIG_PATH" ]]; then
-    echo "Mandatory parameters --repo-url and --haproxy-config-path are missing."
+if [[ -z "$REPO_URL" || -z "$REPO_FILE_PATH" || -z "$HAPROXY_CONFIG_PATH" ]]; then
+    echo "Mandatory parameters --repo-url, --path and --haproxy-config-path are missing."
     exit 1
 fi
 
@@ -90,6 +96,7 @@ echo "Creating and pre-populating config file at $INSTALL_DIR/config/hpxd.yaml..
 cat <<EOL > $INSTALL_DIR/config/hpxd.yaml
 repoURL: $REPO_URL
 branch: $BRANCH
+path: $REPO_FILE_PATH
 haproxyConfigPath: $HAPROXY_CONFIG_PATH
 pollingInterval: $POLLING_INTERVAL
 enablePrometheus: $ENABLE_PROMETHEUS

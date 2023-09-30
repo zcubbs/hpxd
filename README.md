@@ -38,6 +38,7 @@ If you prefer to install using a script:
 curl -sfL https://raw.githubusercontent.com/zcubbs/hpxd/main/scripts/install.sh | sudo bash -s -- \
     --repo-url https://github.com/yourusername/haproxy-configs.git \
     --branch main \
+    --path /path/to/file/in/repo/haproxy.cfg \
     --haproxy-config-path /path/to/haproxy.cfg
 ```
 
