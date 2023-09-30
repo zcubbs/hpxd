@@ -79,7 +79,7 @@ fi
 # Download, extract and install binary
 echo "Downloading and installing hpxd..."
 mkdir -p $INSTALL_DIR
-curl -L -o "$INSTALL_DIR/hpxd.tar.gz" $TARBALL_URL
+curl -L -o "$INSTALL_DIR/hpxd.tar.gz" "$TARBALL_URL"
 tar -xzf "$INSTALL_DIR/hpxd.tar.gz" -C $INSTALL_DIR
 rm "$INSTALL_DIR/hpxd.tar.gz"
 
@@ -90,6 +90,11 @@ mkdir -p $LOG_DIR
 # Create config directory
 echo "Creating config directory at $INSTALL_DIR/config..."
 mkdir -p $INSTALL_DIR/config
+
+# Adjust permissions for haproxy.cfg
+echo "Adjusting permissions for $HAPROXY_CONFIG_PATH..."
+chmod o+r "$HAPROXY_CONFIG_PATH"
+chmod o+rx "$(dirname "$HAPROXY_CONFIG_PATH")"
 
 # Create and pre-populate the config file
 echo "Creating and pre-populating config file at $INSTALL_DIR/config/hpxd.yaml..."
