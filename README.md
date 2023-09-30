@@ -69,6 +69,28 @@ Then, run the tool:
 hpxd -c /path/to/config.yaml
 ```
 
+## Monitoring Metrics
+
+Monitoring is available for the application, and the following metrics are tracked:
+
+- **hpxd_git_pulls_total**:
+    - Description: Total number of times the config is pulled from Git.
+    - Labels: `status` (values: success or failure).
+
+- **hpxd_haproxy_reloads_total**:
+    - Description: Total number of times HAProxy is reloaded.
+
+- **hpxd_invalid_configs_total**:
+    - Description: Total number of times an invalid config is detected.
+
+- **application_info**:
+    - Description: Provides application details such as version, commit, and build date.
+    - Labels: `version`, `commit`, `buildDate`.
+
+These metrics can be accessed via Prometheus and visualized using Grafana.
+
+![monitoring](docs/assets/monitoring.png)
+
 ## Development
 
 > Prerequisites
