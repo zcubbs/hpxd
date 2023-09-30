@@ -7,7 +7,7 @@ INSTALL_DIR="/opt/hpxd"
 LOG_DIR="$INSTALL_DIR/logs"
 SERVICE_PATH="/etc/systemd/system/hpxd.service"
 UNINSTALL_PATH="$INSTALL_DIR/uninstall.sh"
-HPXD_USER="hpxd"
+HPXD_USER="hpxd" # User that will run the hpxd service
 
 # Configuration Variables
 REPO_URL=""
