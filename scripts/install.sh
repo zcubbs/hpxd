@@ -7,6 +7,7 @@ INSTALL_DIR="/opt/hpxd"
 LOG_DIR="$INSTALL_DIR/logs"
 SERVICE_PATH="/etc/systemd/system/hpxd.service"
 UNINSTALL_PATH="$INSTALL_DIR/uninstall.sh"
+HPXD_USER="hpxd"
 
 # Configuration Variables
 REPO_URL=""
@@ -91,10 +92,12 @@ mkdir -p $LOG_DIR
 echo "Creating config directory at $INSTALL_DIR/config..."
 mkdir -p $INSTALL_DIR/config
 
-# Adjust permissions for haproxy.cfg
-echo "Adjusting permissions for $HAPROXY_CONFIG_PATH..."
-chmod o+r "$HAPROXY_CONFIG_PATH"
-chmod o+rx "$(dirname "$HAPROXY_CONFIG_PATH")"
+# Create a dedicated user for hpxd and grant it necessary permissions
+if ! id "$HPXD_USER" &>/dev/null; then
+    useradd -r -s /sbin/nologin $HPXD_USER
+fi
+chown $HPXD_USER: $INSTALL_DIR -R
+chown $HPXD_USER: "$HAPROXY_CONFIG_PATH"
 
 # Create and pre-populate the config file
 echo "Creating and pre-populating config file at $INSTALL_DIR/config/hpxd.yaml..."
