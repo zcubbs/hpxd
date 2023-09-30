@@ -138,7 +138,7 @@ func main() {
 // 3. If the configuration is valid, it's applied and HAProxy is reloaded.
 func update(gitHandler *git.Handler, haproxyHandler *haproxy.Handler, config *Configuration) {
 	for {
-		configPath, err := gitHandler.PullAndUpdate()
+		configPath, updated, err := gitHandler.PullAndUpdate()
 		if err != nil {
 			logrus.Errorf("Error while pulling updates: %v", err)
 			// Update Prometheus metric for failed Git pull
@@ -147,7 +147,7 @@ func update(gitHandler *git.Handler, haproxyHandler *haproxy.Handler, config *Co
 			continue
 		}
 
-		if configPath != "" {
+		if updated {
 			// Temporarily create a handler for validation
 			tempHandler := haproxy.NewHandler(configPath)
 
