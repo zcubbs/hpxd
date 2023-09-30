@@ -1,9 +1,7 @@
 package haproxy
 
 import (
-	"fmt"
 	"github.com/zcubbs/hpxd/pkg/cmd"
-	"os/exec"
 	"strings"
 )
 
@@ -25,15 +23,12 @@ func (h *Handler) ValidateConfig() error {
 		return &Error{OriginalError: err, Output: string(output)}
 	}
 
-	fmt.Println(string(output))
 	return nil
 }
 
 // Reload gracefully reloads HAProxy
 func (h *Handler) Reload() error {
-	cmd := exec.Command("systemctl", "reload", "haproxy")
-
-	output, err := cmd.CombinedOutput()
+	output, err := cmd.RunCmdCombinedOutput("systemctl", "reload", "haproxy")
 	if err != nil && len(output) > 0 {
 		return &Error{OriginalError: err, Output: string(output)}
 	}
