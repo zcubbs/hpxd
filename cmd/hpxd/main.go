@@ -111,6 +111,12 @@ func main() {
 		logrus.Fatal(err)
 	}
 
+	logrus.Infof("Starting hpxd version %s (%s) built on %s",
+		config.Version,
+		config.Commit,
+		config.Date,
+	)
+
 	gitHandler := git.NewHandler(config.RepoURL, config.Branch, config.Path, config.HaproxyConfigPath)
 	haproxyHandler := haproxy.NewHandler(config.HaproxyConfigPath)
 
@@ -118,6 +124,10 @@ func main() {
 		startMetricsEndpoint(config.PrometheusPort)
 	}
 
+	update(gitHandler, haproxyHandler, config)
+}
+
+func update(gitHandler *git.Handler, haproxyHandler *haproxy.Handler, config *Configuration) {
 	for {
 		updated, err := gitHandler.PullAndUpdate()
 		if err != nil {
