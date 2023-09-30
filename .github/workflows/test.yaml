@@ -30,7 +30,9 @@ jobs:
 
     steps:
       - name: Install haproxy
-        run: sudo apt-get install -y haproxy
+        run: >
+          sudo apt-get install -y haproxy
+          chmod 0644 /etc/haproxy/haproxy.cfg
 
       - name: Checkout Code
         uses: actions/checkout@v3.5.3
