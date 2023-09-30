@@ -69,6 +69,21 @@ Then, run the tool:
 hpxd -c /path/to/config.yaml
 ```
 
+## Handling of Repository Credentials
+
+If you're using a private Git repository, `hpxd` requires credentials for access. These credentials should be provided through environment variables to maintain security.
+
+### Setup for Private Repositories:
+
+1. **Username:** Set the `HPXD_GIT_USERNAME` environment variable to your Git username.
+
+2. **Password/Token:** Set the `HPXD_GIT_PASSWORD` environment variable to your Git password or, preferably, a personal access token if you're using platforms like GitHub, GitLab, etc.
+
+```bash
+export HPXD_GIT_USERNAME=your_git_username
+export HPXD_GIT_PASSWORD=your_git_password_or_token
+```
+
 ## Monitoring Metrics
 
 Monitoring is available for the application, and the following metrics are tracked:
