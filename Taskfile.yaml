@@ -1,5 +1,9 @@
 version: '3'
 
+vars:
+  GOOS: "{{OS}}"
+  GOARCH: "{{ARCH}}"
+
 tasks:
 
   mod:

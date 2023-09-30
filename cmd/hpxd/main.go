@@ -1,3 +1,9 @@
+// Package main provides the entry point and core functionality for hpxd.
+//
+// `hpxd` periodically fetches HAProxy configurations from a Git repository,
+// validates them, and applies the configurations if they're valid.
+//
+// Author: zakaria.elbouwab
 package main
 
 import (
@@ -46,7 +52,9 @@ type Configuration struct {
 	Date    string
 }
 
-// setupConfig reads in config file.
+// setupConfig reads the configuration file and initializes the Configuration struct.
+// By default, it looks for a file named 'hpxd.yaml' in the './configs' directory,
+// but a different path can be provided via the `-config` CLI flag.
 // example: `./hpxd -config=/path/to/configs`
 func setupConfig() *Configuration {
 	var configPath string
@@ -86,6 +94,8 @@ func setupConfig() *Configuration {
 	return &config
 }
 
+// validateConfig checks that the mandatory fields in the Configuration struct are set.
+// It returns an error if any required field is missing.
 func validateConfig(config *Configuration) error {
 	if config.RepoURL == "" {
 		return errors.New("missing required config: repoURL")
@@ -105,6 +115,8 @@ func validateConfig(config *Configuration) error {
 	return nil
 }
 
+// startMetricsEndpoint starts a Prometheus metrics endpoint on the specified port.
+// It also registers the application's version, commit, and build date.
 func startMetricsEndpoint(port int) {
 	// register app version info
 	metrics.ApplicationInfo.WithLabelValues(Version, Commit, Date).Set(1)
@@ -121,6 +133,9 @@ func startMetricsEndpoint(port int) {
 	}()
 }
 
+// main is the entry point of the hpxd application. It sets up the configuration,
+// starts required services, and initiates the main update loop to fetch and apply
+// HAProxy configurations.
 func main() {
 	config := setupConfig()
 	if err := validateConfig(config); err != nil {
@@ -194,6 +209,8 @@ func update(gitHandler *git.Handler, haproxyHandler *haproxy.Handler, config *Co
 	}
 }
 
+// copyConfig copies the fetched HAProxy configuration
+// from the temporary storage to the specified destination path.
 func copyConfig(src, dest string) {
 	input, err := os.ReadFile(filepath.Clean(src))
 	if err != nil {
