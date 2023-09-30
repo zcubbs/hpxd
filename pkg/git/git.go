@@ -1,6 +1,7 @@
 package git
 
 import (
+	"fmt"
 	"github.com/zcubbs/hpxd/pkg/cmd"
 	"log"
 	"os"
@@ -33,7 +34,7 @@ func (g *Handler) PullAndUpdate() (bool, error) {
 		// Clone repo if it doesn't exist
 		err := g.cloneRepo()
 		if err != nil {
-			return false, err
+			return false, fmt.Errorf("failed to clone repo: %v", err)
 		}
 		return true, nil // Since it's a new clone, we assume changes
 	}
@@ -41,7 +42,7 @@ func (g *Handler) PullAndUpdate() (bool, error) {
 	// Pull latest changes if repo exists
 	updated, err := g.pullRepo()
 	if err != nil {
-		return false, err
+		return false, fmt.Errorf("failed to pull repo: %v", err)
 	}
 
 	return updated, nil
@@ -58,7 +59,7 @@ func (g *Handler) cloneRepo() error {
 func (g *Handler) pullRepo() (bool, error) {
 	output, err := cmd.RunCmdCombinedOutput("git", "-C", g.localRepoPath, "pull", "origin", g.branch)
 	if err != nil {
-		return false, err
+		return false, fmt.Errorf("failed to pull repo: %v details: %s", err, string(output))
 	}
 
 	// Check if there were any updates from the pull
