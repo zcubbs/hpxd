@@ -31,7 +31,7 @@ mkdir -p $INSTALL_DIR/config
 
 # Create config file
 echo "Creating config file at $INSTALL_DIR/config/config..."
-touch $INSTALL_DIR/config/config
+touch $INSTALL_DIR/config/hpxd.yaml
 
 # Configure systemd service
 echo "Configuring systemd service..."
@@ -41,7 +41,7 @@ Description=HPXD Service
 After=network.target
 
 [Service]
-ExecStart=$INSTALL_DIR/hpxd -config $INSTALL_DIR/config/config
+ExecStart=$INSTALL_DIR/hpxd -config $INSTALL_DIR/config
 Restart=always
 User=nobody
 Group=nogroup
