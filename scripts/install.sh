@@ -121,7 +121,7 @@ After=network.target
 [Service]
 ExecStart=$INSTALL_DIR/hpxd -config $INSTALL_DIR/config
 Restart=always
-User=nobody
+User=$HPXD_USER
 Group=nogroup
 Environment=PATH=/usr/bin:/usr/local/bin
 WorkingDirectory=$INSTALL_DIR
