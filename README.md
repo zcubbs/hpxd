@@ -2,6 +2,15 @@
 
 `hpxd` is a daemon that runs on a node and manages the state of HAProxy. It listens for changes from a specified Git repository and updates the HAProxy configuration accordingly.
 
+[![tag](https://img.shields.io/github/tag/zcubbs/hpxd)](https://github.com/zcubbs/hpxd/releases)
+![Go Version](https://img.shields.io/badge/Go-%3E%3D%201.21-%23007d9c)
+[![GoDoc](https://godoc.org/github.com/zcubbs/hpxd?status.svg)](https://pkg.go.dev/github.com/zcubbs/hpxd)
+[![Lint](https://github.com/zcubbs/hpxd/actions/workflows/lint.yaml/badge.svg)](https://github.com/zcubbs/hpxd/actions/workflows/lint.yaml)
+[![Scan](https://github.com/zcubbs/hpxd/actions/workflows/scan.yaml/badge.svg?branch=main)](https://github.com/zcubbs/hpxd/actions/workflows/scan.yaml)
+![Build Status](https://github.com/zcubbs/hpxd/actions/workflows/test.yaml/badge.svg)
+[![Go Report Card](https://goreportcard.com/badge/github.com/zcubbs/hpxd)](https://goreportcard.com/report/github.com/zcubbs/hpxd)
+[![License](https://img.shields.io/github/license/zcubbs/hpxd.svg)](./LICENSE)
+
 ---
 <p align="center">
 </p>
