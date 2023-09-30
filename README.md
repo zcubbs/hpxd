@@ -35,7 +35,7 @@ You can download the latest release from [here](https://github.com/zcubbs/hpxd/r
 If you prefer to install using a script:
 
 ```bash
-curl -sL https://raw.githubusercontent.com/zcubbs/hpxd/main/scripts/install.sh | sudo bash
+curl -sfL https://raw.githubusercontent.com/zcubbs/hpxd/main/scripts/install.sh | sudo bash
 ```
 
 ### From Source
