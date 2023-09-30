@@ -21,21 +21,38 @@ func TestNewGitHandler(t *testing.T) {
 
 func TestCloneRepo(t *testing.T) {
 	handler := NewHandler(testRepoURL, testRepoBranch, testHaproxyFilePath, testHaproxyConfigPath)
-	err := handler.cloneRepo()
+	_, _, err := handler.cloneRepo()
 	if err != nil {
 		t.Errorf("Failed to clone the repo: %v", err)
 	}
-	defer os.RemoveAll(handler.localRepoPath) // Cleanup after test
+	defer func(path string) {
+		err := os.RemoveAll(path)
+		if err != nil {
+			t.Errorf("Failed to remove the repo: %v", err)
+		}
+	}(handler.localRepoPath) // Cleanup after test
 }
 
 func TestPullRepo(t *testing.T) {
 	handler := NewHandler(testRepoURL, testRepoBranch, testHaproxyFilePath, testHaproxyConfigPath)
-	err := handler.cloneRepo()
+	_, _, err := handler.cloneRepo()
 	if err != nil {
 		t.Errorf("Failed to clone the repo: %v", err)
 	}
-	err = handler.pullRepo()
+	_, _, err = handler.pullRepo()
 	if err != nil {
 		t.Errorf("Failed to pull the repo: %v", err)
+	}
+}
+
+func TestPullAndUpdate(t *testing.T) {
+	handler := NewHandler(testRepoURL, testRepoBranch, testHaproxyFilePath, testHaproxyConfigPath)
+	_, updated, err := handler.PullAndUpdate()
+	if err != nil {
+		t.Errorf("Failed to pull and update: %v", err)
+	}
+
+	if !updated {
+		t.Error("Expected configuration to be updated.")
 	}
 }
