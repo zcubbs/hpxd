@@ -111,7 +111,7 @@ Description=HPXD Service
 After=network.target
 
 [Service]
-ExecStart=$INSTALL_DIR/hpxd -config $INSTALL_DIR/config/hpxd.yaml
+ExecStart=$INSTALL_DIR/hpxd -config $INSTALL_DIR/config
 Restart=always
 User=nobody
 Group=nogroup
