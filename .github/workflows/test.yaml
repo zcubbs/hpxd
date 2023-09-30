@@ -32,6 +32,7 @@ jobs:
       - name: Install haproxy
         run: >
           sudo apt-get install -y haproxy &&
+          cat /etc/haproxy/haproxy.cfg &&
           chmod 0644 /etc/haproxy/haproxy.cfg
 
       - name: Checkout Code
