@@ -25,6 +25,14 @@ rm "$INSTALL_DIR/hpxd.tar.gz"
 echo "Creating logs directory at $LOG_DIR..."
 mkdir -p $LOG_DIR
 
+# Create config directory
+echo "Creating config directory at $INSTALL_DIR/config..."
+mkdir -p $INSTALL_DIR/config
+
+# Create config file
+echo "Creating config file at $INSTALL_DIR/config/config..."
+touch $INSTALL_DIR/config/config
+
 # Configure systemd service
 echo "Configuring systemd service..."
 cat <<EOL > $SERVICE_PATH
@@ -33,7 +41,7 @@ Description=HPXD Service
 After=network.target
 
 [Service]
-ExecStart=$INSTALL_DIR/hpxd
+ExecStart=$INSTALL_DIR/hpxd -config $INSTALL_DIR/config/config
 Restart=always
 User=nobody
 Group=nogroup
