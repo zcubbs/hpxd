@@ -28,7 +28,7 @@ func (h *Handler) ValidateConfig() error {
 
 // Reload gracefully reloads HAProxy
 func (h *Handler) Reload() error {
-	output, err := cmd.RunCmdCombinedOutput("systemctl", "reload", "haproxy")
+	output, err := cmd.RunCmdCombinedOutput("sudo", "systemctl", "reload", "haproxy")
 	if err != nil && len(output) > 0 {
 		return &Error{OriginalError: err, Output: string(output)}
 	}
