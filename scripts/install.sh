@@ -30,7 +30,7 @@ echo "Creating config directory at $INSTALL_DIR/config..."
 mkdir -p $INSTALL_DIR/config
 
 # Create config file
-echo "Creating config file at $INSTALL_DIR/config/config..."
+echo "Creating config file at $INSTALL_DIR/config/hpxd.yaml..."
 touch $INSTALL_DIR/config/hpxd.yaml
 
 # Configure systemd service
