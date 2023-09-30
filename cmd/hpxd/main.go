@@ -26,6 +26,7 @@ import (
 const (
 	defaultPollingInterval = 5 * time.Second
 	prometheusDefaultPort  = 9100
+	defaultLogLevel        = "info"
 )
 
 var (
@@ -46,6 +47,8 @@ type Configuration struct {
 	PollingInterval   time.Duration `mapstructure:"pollingInterval"`
 	EnablePrometheus  bool          `mapstructure:"enablePrometheus"`
 	PrometheusPort    int           `mapstructure:"prometheusPort"`
+
+	LogLevel string `mapstructure:"logLevel"`
 
 	Version string
 	Commit  string
@@ -68,6 +71,7 @@ func setupConfig() *Configuration {
 	viper.SetDefault("enablePrometheus", false)
 	viper.SetDefault("prometheusPort", prometheusDefaultPort)
 	viper.SetDefault("pollingInterval", defaultPollingInterval)
+	viper.SetDefault("logLevel", defaultLogLevel)
 
 	err := viper.BindEnv("gitUsername", "HPXD_GIT_USERNAME")
 	if err != nil {
@@ -115,6 +119,26 @@ func validateConfig(config *Configuration) error {
 	return nil
 }
 
+// initializeLogger sets up the Logrus logger.
+// It accepts a log level as a string and sets the log level accordingly.
+func initializeLogger(level string) {
+	logrus.SetFormatter(&logrus.TextFormatter{})
+
+	switch level {
+	case "debug":
+		logrus.SetLevel(logrus.DebugLevel)
+	case "info":
+		logrus.SetLevel(logrus.InfoLevel)
+	case "warn":
+		logrus.SetLevel(logrus.WarnLevel)
+	case "error":
+		logrus.SetLevel(logrus.ErrorLevel)
+	default:
+		logrus.SetLevel(logrus.InfoLevel)
+		logrus.Warnf("Invalid log level '%s' provided. Defaulting to 'info'.", level)
+	}
+}
+
 // startMetricsEndpoint starts a Prometheus metrics endpoint on the specified port.
 // It also registers the application's version, commit, and build date.
 func startMetricsEndpoint(port int) {
@@ -141,6 +165,9 @@ func main() {
 	if err := validateConfig(config); err != nil {
 		logrus.Fatal(err)
 	}
+
+	// Initialize logger with specified log level
+	initializeLogger(config.LogLevel)
 
 	logrus.Infof("Starting hpxd version %s (%s) built on %s",
 		config.Version,

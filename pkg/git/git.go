@@ -9,6 +9,7 @@ package git
 
 import (
 	"fmt"
+	"github.com/sirupsen/logrus"
 	"github.com/zcubbs/hpxd/pkg/cmd"
 	"net/url"
 	"os"
@@ -99,9 +100,11 @@ func (g *Handler) cloneRepo() (string, bool, error) {
 func (g *Handler) pullRepo() (string, bool, error) {
 	output, err := cmd.RunCmdCombinedOutput("git", "-C", g.localRepoPath, "pull", g.getRepoURLWithCredentials(), g.branch)
 	if err != nil {
+		logrus.Debugf("Failed to pull repo: %v, details: %s", err, string(output))
 		return "", false, fmt.Errorf("failed to pull repo: %v, details: %s", err, string(output))
 	}
 
+	logrus.Debugf("Git pull output: %s", string(output))
 	// Check if there were any updates from the pull
 	if string(output) == "Already up to date.\n" {
 		return "", false, nil
