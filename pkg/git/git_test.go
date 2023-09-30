@@ -7,19 +7,20 @@ import (
 
 const (
 	testRepoURL           = "https://github.com/zcubbs/haproxy-test-repo-public.git"
-	testHaproxyConfigPath = "/basic/haproxy.cfg"
+	testHaproxyFilePath   = "/basic/haproxy.cfg"
+	testHaproxyConfigPath = "/etc/haproxy/haproxy.cfg"
 	testRepoBranch        = "main"
 )
 
 func TestNewGitHandler(t *testing.T) {
-	handler := NewHandler(testRepoURL, testRepoBranch, testHaproxyConfigPath)
+	handler := NewHandler(testRepoURL, testRepoBranch, testHaproxyFilePath, testHaproxyConfigPath)
 	if handler == nil {
 		t.Errorf("Failed to create a new GitHandler.")
 	}
 }
 
 func TestCloneRepo(t *testing.T) {
-	handler := NewHandler(testRepoURL, testRepoBranch, testHaproxyConfigPath)
+	handler := NewHandler(testRepoURL, testRepoBranch, testHaproxyFilePath, testHaproxyConfigPath)
 	err := handler.cloneRepo()
 	if err != nil {
 		t.Errorf("Failed to clone the repo: %v", err)
@@ -28,8 +29,12 @@ func TestCloneRepo(t *testing.T) {
 }
 
 func TestPullRepo(t *testing.T) {
-	handler := NewHandler(testRepoURL, testRepoBranch, testHaproxyConfigPath)
-	_, err := handler.pullRepo()
+	handler := NewHandler(testRepoURL, testRepoBranch, testHaproxyFilePath, testHaproxyConfigPath)
+	err := handler.cloneRepo()
+	if err != nil {
+		t.Errorf("Failed to clone the repo: %v", err)
+	}
+	_, err = handler.pullRepo()
 	if err != nil {
 		t.Errorf("Failed to pull the repo: %v", err)
 	}

@@ -61,6 +61,7 @@ hpxd -c /path/to/config.yaml
 > Prerequisites
 > - Docker (https://rancherdesktop.io/)
 > - Task (https://taskfile.dev/#/installation)
+> 
 
 ### Setup Development Environment
 

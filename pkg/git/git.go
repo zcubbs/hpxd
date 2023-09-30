@@ -11,15 +11,17 @@ type Handler struct {
 	repoURL           string
 	branch            string
 	localRepoPath     string
+	path              string
 	haproxyConfigPath string
 }
 
 // NewHandler initializes a new GitHandler
-func NewHandler(repoURL, branch, haproxyConfigPath string) *Handler {
+func NewHandler(repoURL, branch, path, haproxyConfigPath string) *Handler {
 	return &Handler{
 		repoURL:           repoURL,
 		branch:            branch,
 		localRepoPath:     filepath.Join(os.TempDir(), "hpxd-git-repo"),
+		path:              path,
 		haproxyConfigPath: haproxyConfigPath,
 	}
 }
@@ -68,7 +70,7 @@ func (g *Handler) pullRepo() (bool, error) {
 }
 
 func (g *Handler) updateHAProxyConfig() error {
-	srcFile := filepath.Join(g.localRepoPath, "path-to-config-inside-repo") // You need to specify the relative path of your HAProxy config file inside the Git repo
+	srcFile := filepath.Join(g.localRepoPath, g.path)
 	dstFile := g.haproxyConfigPath
 
 	input, err := os.ReadFile(filepath.Clean(srcFile))

@@ -27,8 +27,10 @@ var (
 )
 
 type Configuration struct {
-	RepoURL           string        `mapstructure:"repoURL"`
-	Branch            string        `mapstructure:"branch"`
+	RepoURL string `mapstructure:"repoURL"`
+	Branch  string `mapstructure:"branch"`
+	Path    string `mapstructure:"path"`
+
 	HaproxyConfigPath string        `mapstructure:"haproxyConfigPath"`
 	PollingInterval   time.Duration `mapstructure:"pollingInterval"`
 	EnablePrometheus  bool          `mapstructure:"enablePrometheus"`
@@ -79,6 +81,10 @@ func validateConfig(config *Configuration) error {
 		return errors.New("missing required config: branch")
 	}
 
+	if config.Path == "" {
+		return errors.New("missing required config: path")
+	}
+
 	if config.HaproxyConfigPath == "" {
 		return errors.New("missing required config: haproxyConfigPath")
 	}
@@ -105,7 +111,7 @@ func main() {
 		logrus.Fatal(err)
 	}
 
-	gitHandler := git.NewHandler(config.RepoURL, config.Branch, config.HaproxyConfigPath)
+	gitHandler := git.NewHandler(config.RepoURL, config.Branch, config.Path, config.HaproxyConfigPath)
 	haproxyHandler := haproxy.NewHandler(config.HaproxyConfigPath)
 
 	if config.EnablePrometheus {
