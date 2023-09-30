@@ -130,6 +130,8 @@ Restart=always
 User=$HPXD_USER
 Group=nogroup
 Environment=PATH=/usr/bin:/usr/local/bin:/usr/sbin
+Environment=HPXD_GIT_USERNAME=$HPXD_GIT_USERNAME
+Environment=HPXD_GIT_PASSWORD=$HPXD_GIT_PASSWORD
 WorkingDirectory=$INSTALL_DIR
 StandardOutput=append:$LOG_DIR/output.log
 StandardError=append:$LOG_DIR/error.log
