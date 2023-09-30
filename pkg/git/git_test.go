@@ -34,7 +34,7 @@ func TestPullRepo(t *testing.T) {
 	if err != nil {
 		t.Errorf("Failed to clone the repo: %v", err)
 	}
-	_, err = handler.pullRepo()
+	err = handler.pullRepo()
 	if err != nil {
 		t.Errorf("Failed to pull the repo: %v", err)
 	}

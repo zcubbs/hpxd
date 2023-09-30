@@ -5,6 +5,8 @@ import (
 	"flag"
 	"fmt"
 	"net/http"
+	"os"
+	"path/filepath"
 	"time"
 
 	"github.com/prometheus/client_golang/prometheus/promhttp"
@@ -127,9 +129,16 @@ func main() {
 	update(gitHandler, haproxyHandler, config)
 }
 
+// update is the main loop of hpxd. This is what happens in the loop:
+//
+// 1. HAProxy's configuration is fetched from git.
+//
+// 2. The fetched configuration is validated. If it's invalid, the loop continues.
+//
+// 3. If the configuration is valid, it's applied and HAProxy is reloaded.
 func update(gitHandler *git.Handler, haproxyHandler *haproxy.Handler, config *Configuration) {
 	for {
-		updated, err := gitHandler.PullAndUpdate()
+		configPath, err := gitHandler.PullAndUpdate()
 		if err != nil {
 			logrus.Errorf("Error while pulling updates: %v", err)
 			// Update Prometheus metric for failed Git pull
@@ -138,17 +147,19 @@ func update(gitHandler *git.Handler, haproxyHandler *haproxy.Handler, config *Co
 			continue
 		}
 
-		if updated {
-			// Update Prometheus metric for successful Git pull
-			metrics.GitPullCounter.WithLabelValues("success").Inc()
+		if configPath != "" {
+			// Temporarily create a handler for validation
+			tempHandler := haproxy.NewHandler(configPath)
 
 			// Check if new configuration is valid
-			if err := haproxyHandler.ValidateConfig(); err != nil {
+			if err := tempHandler.ValidateConfig(); err != nil {
 				logrus.Errorf("Pulled HAProxy configuration is invalid: %v", err)
 				// Update Prometheus metric for invalid config
 				metrics.InvalidConfigCounter.Inc()
 			} else {
-				// Handle HAProxy reload logic
+				// If valid, update the actual config and reload HAProxy
+				copyConfig(configPath, config.HaproxyConfigPath)
+
 				if err := haproxyHandler.Reload(); err != nil {
 					logrus.Errorf("Failed to reload HAProxy: %v", err)
 				} else {
@@ -159,5 +170,18 @@ func update(gitHandler *git.Handler, haproxyHandler *haproxy.Handler, config *Co
 			}
 		}
 		time.Sleep(config.PollingInterval)
+	}
+}
+
+func copyConfig(src, dest string) {
+	input, err := os.ReadFile(filepath.Clean(src))
+	if err != nil {
+		logrus.Errorf("Failed to read config from source: %v", err)
+		return
+	}
+
+	err = os.WriteFile(dest, input, 0600)
+	if err != nil {
+		logrus.Errorf("Error writing config to destination: %v", err)
 	}
 }

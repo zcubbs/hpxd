@@ -28,24 +28,28 @@ func NewHandler(repoURL, branch, path, haproxyConfigPath string) *Handler {
 }
 
 // PullAndUpdate clones or pulls the git repo, and then updates the HAProxy config if changes are detected
-func (g *Handler) PullAndUpdate() (bool, error) {
+func (g *Handler) PullAndUpdate() (string, error) {
 	// Check if repo already exists locally
 	if _, err := os.Stat(g.localRepoPath); os.IsNotExist(err) {
 		// Clone repo if it doesn't exist
 		err := g.cloneRepo()
 		if err != nil {
-			return false, fmt.Errorf("failed to clone repo: %v", err)
+			return "", fmt.Errorf("failed to clone repo: %v", err)
 		}
-		return true, nil // Since it's a new clone, we assume changes
+		return g.getHAProxyConfigPath(), nil
 	}
 
 	// Pull latest changes if repo exists
-	updated, err := g.pullRepo()
+	err := g.pullRepo()
 	if err != nil {
-		return false, fmt.Errorf("failed to pull repo: %v", err)
+		return "", fmt.Errorf("failed to pull repo: %v", err)
 	}
 
-	return updated, nil
+	return g.getHAProxyConfigPath(), nil
+}
+
+func (g *Handler) getHAProxyConfigPath() string {
+	return filepath.Join(g.localRepoPath, g.path)
 }
 
 func (g *Handler) cloneRepo() error {
@@ -56,18 +60,18 @@ func (g *Handler) cloneRepo() error {
 	return g.updateHAProxyConfig()
 }
 
-func (g *Handler) pullRepo() (bool, error) {
+func (g *Handler) pullRepo() error {
 	output, err := cmd.RunCmdCombinedOutput("git", "-C", g.localRepoPath, "pull", "origin", g.branch)
 	if err != nil {
-		return false, fmt.Errorf("failed to pull repo: %v details: %s", err, string(output))
+		return fmt.Errorf("failed to pull repo: %v details: %s", err, string(output))
 	}
 
 	// Check if there were any updates from the pull
 	if string(output) == "Already up to date.\n" {
-		return false, nil
+		return nil
 	}
 
-	return true, g.updateHAProxyConfig()
+	return g.updateHAProxyConfig()
 }
 
 func (g *Handler) updateHAProxyConfig() error {
