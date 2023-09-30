@@ -19,6 +19,7 @@ HAPROXY_CONFIG_PATH=""
 POLLING_INTERVAL="5s"
 ENABLE_PROMETHEUS=true
 PROMETHEUS_PORT=9100
+LOG_LEVEL="info" # default log level is 'info'
 
 # Ensure the script is run as root
 if [ "$(id -u)" -ne 0 ]; then
@@ -68,15 +69,20 @@ do
         shift
         ;;
         --git-username)
-        HPXD_GIT_USERNAME="$2"
+        GIT_USERNAME="$2"
         shift
         shift
         ;;
         --git-password)
-        HPXD_GIT_PASSWORD="$2"
+        GIT_PASSWORD="$2"
         shift
         shift
         ;;
+        --log-level)
+        LOG_LEVEL="$2"
+        shift
+        shift
+              ;;
         *)    # unknown option
         shift # past argument
         ;;
@@ -127,6 +133,7 @@ haproxyConfigPath: $HAPROXY_CONFIG_PATH
 pollingInterval: $POLLING_INTERVAL
 enablePrometheus: $ENABLE_PROMETHEUS
 prometheusPort: $PROMETHEUS_PORT
+logLevel: $LOG_LEVEL
 EOL
 
 # Configure systemd service
