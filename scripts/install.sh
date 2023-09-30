@@ -8,9 +8,65 @@ LOG_DIR="$INSTALL_DIR/logs"
 SERVICE_PATH="/etc/systemd/system/hpxd.service"
 UNINSTALL_PATH="$INSTALL_DIR/uninstall.sh"
 
+# Configuration Variables
+REPO_URL=""
+BRANCH="main"
+HAPROXY_CONFIG_PATH=""
+POLLING_INTERVAL="5s"
+ENABLE_PROMETHEUS=true
+PROMETHEUS_PORT=9100
+
 # Ensure the script is run as root
 if [ "$(id -u)" -ne 0 ]; then
     echo "Please run this script as root."
+    exit 1
+fi
+
+# Parse arguments
+while [[ $# -gt 0 ]]
+do
+    key="$1"
+
+    case $key in
+        --repo-url)
+        REPO_URL="$2"
+        shift
+        shift
+        ;;
+        --branch)
+        BRANCH="$2"
+        shift
+        shift
+        ;;
+        --haproxy-config-path)
+        HAPROXY_CONFIG_PATH="$2"
+        shift
+        shift
+        ;;
+        --polling-interval)
+        POLLING_INTERVAL="$2"
+        shift
+        shift
+        ;;
+        --enable-prometheus)
+        ENABLE_PROMETHEUS="$2"
+        shift
+        shift
+        ;;
+        --prometheus-port)
+        PROMETHEUS_PORT="$2"
+        shift
+        shift
+        ;;
+        *)    # unknown option
+        shift # past argument
+        ;;
+    esac
+done
+
+# Check if mandatory parameters are provided
+if [[ -z "$REPO_URL" || -z "$HAPROXY_CONFIG_PATH" ]]; then
+    echo "Mandatory parameters --repo-url and --haproxy-config-path are missing."
     exit 1
 fi
 
@@ -29,9 +85,16 @@ mkdir -p $LOG_DIR
 echo "Creating config directory at $INSTALL_DIR/config..."
 mkdir -p $INSTALL_DIR/config
 
-# Create config file
-echo "Creating config file at $INSTALL_DIR/config/hpxd.yaml..."
-touch $INSTALL_DIR/config/hpxd.yaml
+# Create and pre-populate the config file
+echo "Creating and pre-populating config file at $INSTALL_DIR/config/hpxd.yaml..."
+cat <<EOL > $INSTALL_DIR/config/hpxd.yaml
+repoURL: $REPO_URL
+branch: $BRANCH
+haproxyConfigPath: $HAPROXY_CONFIG_PATH
+pollingInterval: $POLLING_INTERVAL
+enablePrometheus: $ENABLE_PROMETHEUS
+prometheusPort: $PROMETHEUS_PORT
+EOL
 
 # Configure systemd service
 echo "Configuring systemd service..."
@@ -41,7 +104,7 @@ Description=HPXD Service
 After=network.target
 
 [Service]
-ExecStart=$INSTALL_DIR/hpxd -config $INSTALL_DIR/config
+ExecStart=$INSTALL_DIR/hpxd -config $INSTALL_DIR/config/hpxd.yaml
 Restart=always
 User=nobody
 Group=nogroup

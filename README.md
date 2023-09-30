@@ -35,7 +35,10 @@ You can download the latest release from [here](https://github.com/zcubbs/hpxd/r
 If you prefer to install using a script:
 
 ```bash
-curl -sfL https://raw.githubusercontent.com/zcubbs/hpxd/main/scripts/install.sh | sudo bash
+curl -sfL https://raw.githubusercontent.com/zcubbs/hpxd/main/scripts/install.sh | sudo bash -s -- \
+    --repo-url https://github.com/yourusername/haproxy-configs.git \
+    --branch main \
+    --haproxy-config-path /path/to/haproxy.cfg
 ```
 
 ### From Source
