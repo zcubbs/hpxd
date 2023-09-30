@@ -12,6 +12,8 @@ HPXD_USER="hpxd" # User that will run the hpxd service
 # Configuration Variables
 REPO_URL=""
 BRANCH="main"
+GIT_USERNAME=""
+GIT_PASSWORD=""
 REPO_FILE_PATH=""
 HAPROXY_CONFIG_PATH=""
 POLLING_INTERVAL="5s"
@@ -62,6 +64,16 @@ do
         ;;
         --prometheus-port)
         PROMETHEUS_PORT="$2"
+        shift
+        shift
+        ;;
+        --git-username)
+        HPXD_GIT_USERNAME="$2"
+        shift
+        shift
+        ;;
+        --git-password)
+        HPXD_GIT_PASSWORD="$2"
         shift
         shift
         ;;
@@ -130,8 +142,8 @@ Restart=always
 User=$HPXD_USER
 Group=nogroup
 Environment=PATH=/usr/bin:/usr/local/bin:/usr/sbin
-Environment=HPXD_GIT_USERNAME=$HPXD_GIT_USERNAME
-Environment=HPXD_GIT_PASSWORD=$HPXD_GIT_PASSWORD
+Environment=HPXD_GIT_USERNAME=GIT_USERNAME
+Environment=HPXD_GIT_PASSWORD=GIT_PASSWORD
 WorkingDirectory=$INSTALL_DIR
 StandardOutput=append:$LOG_DIR/output.log
 StandardError=append:$LOG_DIR/error.log
