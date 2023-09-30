@@ -94,6 +94,8 @@ func validateConfig(config *Configuration) error {
 }
 
 func startMetricsEndpoint(port int) {
+	// register app version info
+	metrics.ApplicationInfo.WithLabelValues(Version, Commit, Date).Set(1)
 	http.Handle("/metrics", promhttp.Handler())
 	go func() {
 		server := &http.Server{

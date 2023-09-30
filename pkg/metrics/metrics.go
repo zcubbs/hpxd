@@ -24,9 +24,17 @@ var (
 			Help: "Total number of times an invalid config is detected",
 		},
 	)
+
+	ApplicationInfo = prometheus.NewGaugeVec(
+		prometheus.GaugeOpts{
+			Name: "application_info",
+			Help: "Application info (version, commit, buildDate)",
+		},
+		[]string{"version", "commit", "buildDate"},
+	)
 )
 
 func init() {
 	// Register the metrics with Prometheus's default registry
-	prometheus.MustRegister(GitPullCounter, HaproxyReloadCounter, InvalidConfigCounter)
+	prometheus.MustRegister(GitPullCounter, HaproxyReloadCounter, InvalidConfigCounter, ApplicationInfo)
 }
