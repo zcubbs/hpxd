@@ -33,7 +33,8 @@ jobs:
         run: >
           sudo apt-get install -y haproxy &&
           cat /etc/haproxy/haproxy.cfg &&
-          chmod 0644 /etc/haproxy/haproxy.cfg
+          ls -rtlha /etc/haproxy &&
+          sudo chmod 777 /etc/haproxy/haproxy.cfg 
 
       - name: Checkout Code
         uses: actions/checkout@v3.5.3
