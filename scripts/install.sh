@@ -123,7 +123,7 @@ ExecStart=$INSTALL_DIR/hpxd -config $INSTALL_DIR/config
 Restart=always
 User=$HPXD_USER
 Group=nogroup
-Environment=PATH=/usr/bin:/usr/local/bin
+Environment=PATH=/usr/bin:/usr/local/bin:/usr/sbin
 WorkingDirectory=$INSTALL_DIR
 StandardOutput=append:$LOG_DIR/output.log
 StandardError=append:$LOG_DIR/error.log
