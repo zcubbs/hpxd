@@ -99,8 +99,11 @@ fi
 chown $HPXD_USER: $INSTALL_DIR -R
 chown $HPXD_USER: "$HAPROXY_CONFIG_PATH"
 
-# Allow hpxd user to reload haproxy without a password
-echo "$HPXD_USER ALL=NOPASSWD: /bin/systemctl reload haproxy" | sudo tee -a /etc/sudoers.d/hpxd_permissions
+# Allow hpxd user permissions for haproxy
+cat <<EOL | sudo tee /etc/sudoers.d/hpxd_permissions
+$HPXD_USER ALL=NOPASSWD: /bin/systemctl reload haproxy
+$HPXD_USER ALL=NOPASSWD: /bin/systemctl status haproxy
+EOL
 
 # Create and pre-populate the config file
 echo "Creating and pre-populating config file at $INSTALL_DIR/config/hpxd.yaml..."
