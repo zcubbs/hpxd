@@ -13,14 +13,14 @@ const (
 )
 
 func TestNewGitHandler(t *testing.T) {
-	handler := NewHandler(testRepoURL, testRepoBranch, testHaproxyFilePath, testHaproxyConfigPath)
+	handler := NewHandler(testRepoURL, testRepoBranch, "", "", testHaproxyFilePath, testHaproxyConfigPath)
 	if handler == nil {
 		t.Errorf("Failed to create a new GitHandler.")
 	}
 }
 
 func TestCloneRepo(t *testing.T) {
-	handler := NewHandler(testRepoURL, testRepoBranch, testHaproxyFilePath, testHaproxyConfigPath)
+	handler := NewHandler(testRepoURL, testRepoBranch, "", "", testHaproxyFilePath, testHaproxyConfigPath)
 	_, _, err := handler.cloneRepo()
 	if err != nil {
 		t.Errorf("Failed to clone the repo: %v", err)
@@ -34,7 +34,7 @@ func TestCloneRepo(t *testing.T) {
 }
 
 func TestPullRepo(t *testing.T) {
-	handler := NewHandler(testRepoURL, testRepoBranch, testHaproxyFilePath, testHaproxyConfigPath)
+	handler := NewHandler(testRepoURL, testRepoBranch, "", "", testHaproxyFilePath, testHaproxyConfigPath)
 	_, _, err := handler.cloneRepo()
 	if err != nil {
 		t.Errorf("Failed to clone the repo: %v", err)
@@ -46,7 +46,7 @@ func TestPullRepo(t *testing.T) {
 }
 
 func TestPullAndUpdate(t *testing.T) {
-	handler := NewHandler(testRepoURL, testRepoBranch, testHaproxyFilePath, testHaproxyConfigPath)
+	handler := NewHandler(testRepoURL, testRepoBranch, "", "", testHaproxyFilePath, testHaproxyConfigPath)
 	_, updated, err := handler.PullAndUpdate()
 	if err != nil {
 		t.Errorf("Failed to pull and update: %v", err)

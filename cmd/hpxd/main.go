@@ -33,6 +33,9 @@ type Configuration struct {
 	Branch  string `mapstructure:"branch"`
 	Path    string `mapstructure:"path"`
 
+	GitUsername string `mapstructure:"gitUsername"`
+	GitPassword string `mapstructure:"gitPassword"`
+
 	HaproxyConfigPath string        `mapstructure:"haproxyConfigPath"`
 	PollingInterval   time.Duration `mapstructure:"pollingInterval"`
 	EnablePrometheus  bool          `mapstructure:"enablePrometheus"`
@@ -57,6 +60,15 @@ func setupConfig() *Configuration {
 	viper.SetDefault("enablePrometheus", false)
 	viper.SetDefault("prometheusPort", prometheusDefaultPort)
 	viper.SetDefault("pollingInterval", defaultPollingInterval)
+
+	err := viper.BindEnv("gitUsername", "HPXD_GIT_USERNAME")
+	if err != nil {
+		logrus.Errorf("Error binding env var HPXD_GIT_USERNAME: %v", err)
+	}
+	err = viper.BindEnv("gitPassword", "HPXD_GIT_PASSWORD")
+	if err != nil {
+		logrus.Errorf("Error binding env var HPXD_GIT_PASSWORD: %v", err)
+	}
 
 	if err := viper.ReadInConfig(); err != nil {
 		logrus.Fatalf("Error reading config file, %s", err)
@@ -121,7 +133,14 @@ func main() {
 		config.Date,
 	)
 
-	gitHandler := git.NewHandler(config.RepoURL, config.Branch, config.Path, config.HaproxyConfigPath)
+	gitHandler := git.NewHandler(
+		config.RepoURL,
+		config.Branch,
+		config.GitUsername,
+		config.GitPassword,
+		config.Path,
+		config.HaproxyConfigPath,
+	)
 	haproxyHandler := haproxy.NewHandler(config.HaproxyConfigPath)
 
 	if config.EnablePrometheus {
