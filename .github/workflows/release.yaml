@@ -6,7 +6,7 @@ permissions:
   contents: write
 jobs:
   release:
-    if : startsWith(github.event.inputs.semver, 'v') && github.triggering_actor == 'zcubbs'
+    if : github.triggering_actor == 'zcubbs'
 
     runs-on: ubuntu-latest
     steps:
