@@ -10,6 +10,12 @@ jobs:
 
     runs-on: ubuntu-latest
     steps:
+      - name: Set Static Major and Minor Versions
+        id: static_version
+        run: |
+          echo "::set-output name=major::0"
+          echo "::set-output name=minor::2"
+
       - name: Get latest release version
         id: latest_version
         run: |
@@ -20,11 +26,17 @@ jobs:
       - name: Calculate new version
         id: new_version
         run: |
-          latest_version=${{ steps.latest_version.outputs.version }}
-          major_minor=$(echo "$latest_version" | cut -d. -f1-2)
-          patch=$(echo "$latest_version" | cut -d. -f3 | tr -d 'v')
-          let "patch+=1"
-          new_version="${major_minor}.${patch}"
+          static_minor=${{ steps.static_version.outputs.minor }}
+          latest_minor=$(echo "${{ steps.latest_version.outputs.version }}" | cut -d. -f2)
+          patch=$(echo "${{ steps.latest_version.outputs.version }}" | cut -d. -f3 | tr -d 'v')
+          
+          if [[ "$static_minor" != "$latest_minor" ]]; then
+            patch=0
+          else
+            let "patch+=1"
+          fi
+
+          new_version="v${{ steps.static_version.outputs.major }}.$static_minor.${patch}"
           echo "::set-output name=version::$new_version"
 
       - name: Checkout Code
