@@ -106,7 +106,8 @@ func (g *Handler) pullRepo() (string, bool, error) {
 
 	logrus.Debugf("Git pull output: %s", string(output))
 	// Check if there were any updates from the pull
-	if string(output) == "Already up to date.\n" {
+	out := string(output)
+	if strings.Contains(out, "Already up to date") {
 		return "", false, nil
 	}
 
