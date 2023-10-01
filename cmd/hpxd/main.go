@@ -7,9 +7,11 @@
 package main
 
 import (
+	"bytes"
 	"errors"
 	"flag"
 	"fmt"
+	"io"
 	"net/http"
 	"os"
 	"path/filepath"
@@ -119,10 +121,23 @@ func validateConfig(config *Configuration) error {
 	return nil
 }
 
+type LevelFilterWriter struct {
+	stdOut io.Writer
+	stdErr io.Writer
+}
+
+func (w *LevelFilterWriter) Write(entry []byte) (int, error) {
+	if bytes.Contains(entry, []byte("error")) || bytes.Contains(entry, []byte("fatal")) || bytes.Contains(entry, []byte("panic")) {
+		return w.stdErr.Write(entry)
+	}
+	return w.stdOut.Write(entry)
+}
+
 // initializeLogger sets up the Logrus logger.
 // It accepts a log level as a string and sets the log level accordingly.
 func initializeLogger(level string) {
 	logrus.SetFormatter(&logrus.TextFormatter{})
+	logrus.SetOutput(&LevelFilterWriter{stdOut: os.Stdout, stdErr: os.Stderr})
 
 	switch level {
 	case "debug":
