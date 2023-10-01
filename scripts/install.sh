@@ -12,13 +12,13 @@ HPXD_USER="hpxd" # User that will run the hpxd service
 # Configuration Variables
 REPO_URL=""
 BRANCH="main"
-GIT_USERNAME=""
-GIT_PASSWORD=""
 REPO_FILE_PATH=""
 HAPROXY_CONFIG_PATH=""
 POLLING_INTERVAL="5s"
 ENABLE_PROMETHEUS=true
 PROMETHEUS_PORT=9100
+GIT_USERNAME=""
+GIT_PASSWORD=""
 LOG_LEVEL="info" # default log level is 'info'
 
 # Ensure the script is run as root
@@ -136,6 +136,26 @@ prometheusPort: $PROMETHEUS_PORT
 logLevel: $LOG_LEVEL
 EOL
 
+# Create an environment file for hpxd
+ENV_FILE="$INSTALL_DIR/.hpxd_vars"
+
+echo "Creating environment file at $ENV_FILE..."
+touch $ENV_FILE
+
+# If GIT_USERNAME is passed as an argument, write to the environment file
+if [[ -n "$GIT_USERNAME" ]]; then
+    echo "HPXD_GIT_USERNAME=$GIT_USERNAME" >> $ENV_FILE
+fi
+
+# If GIT_PASSWORD is passed as an argument, write to the environment file
+if [[ -n "$GIT_PASSWORD" ]]; then
+    echo "HPXD_GIT_PASSWORD=$GIT_PASSWORD" >> $ENV_FILE
+fi
+
+# Set permissions for the environment file so only hpxd (or root) can read it
+chown $HPXD_USER: $ENV_FILE
+chmod 600 $ENV_FILE
+
 # Configure systemd service
 echo "Configuring systemd service..."
 cat <<EOL > $SERVICE_PATH
@@ -145,12 +165,11 @@ After=network.target
 
 [Service]
 ExecStart=$INSTALL_DIR/hpxd -config $INSTALL_DIR/config
+EnvironmentFile=$ENV_FILE
 Restart=always
 User=$HPXD_USER
 Group=nogroup
 Environment=PATH=/usr/bin:/usr/local/bin:/usr/sbin
-Environment=HPXD_GIT_USERNAME=$GIT_USERNAME
-Environment=HPXD_GIT_PASSWORD=$GIT_PASSWORD
 WorkingDirectory=$INSTALL_DIR
 StandardOutput=append:$LOG_DIR/output.log
 StandardError=append:$LOG_DIR/error.log
