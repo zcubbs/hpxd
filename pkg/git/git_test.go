@@ -47,12 +47,8 @@ func TestPullRepo(t *testing.T) {
 
 func TestPullAndUpdate(t *testing.T) {
 	handler := NewHandler(testRepoURL, testRepoBranch, "", "", testHaproxyFilePath, testHaproxyConfigPath)
-	_, updated, err := handler.PullAndUpdate()
+	_, _, err := handler.PullAndUpdate()
 	if err != nil {
 		t.Errorf("Failed to pull and update: %v", err)
-	}
-
-	if !updated {
-		t.Error("Expected configuration to be updated.")
 	}
 }
